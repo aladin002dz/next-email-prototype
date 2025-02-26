@@ -1,101 +1,189 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [emailType, setEmailType] = useState("welcome");
+  const [recipient, setRecipient] = useState("");
+  const [username, setUsername] = useState("");
+  const [message, setMessage] = useState("");
+  const [actionUrl, setActionUrl] = useState("https://example.com");
+  const [actionText, setActionText] = useState("View Details");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<{ success?: boolean; error?: string } | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: emailType,
+          to: recipient,
+          data: {
+            username,
+            message,
+            actionUrl,
+            actionText,
+          },
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setResult({ success: true });
+      } else {
+        setResult({ error: data.error || "Failed to send email" });
+      }
+    } catch (error) {
+      setResult({ error: "An error occurred while sending the email" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePreview = () => {
+    // Build query params for the preview
+    const params = new URLSearchParams();
+    params.append("type", emailType);
+    if (username) params.append("username", username);
+    
+    if (emailType === "notification") {
+      if (message) params.append("message", message);
+      if (actionUrl) params.append("actionUrl", actionUrl);
+      if (actionText) params.append("actionText", actionText);
+    }
+    
+    // Open preview in a new tab
+    window.open(`/preview?${params.toString()}`, "_blank");
+  };
+
+  return (
+    <div className="min-h-screen p-8 max-w-3xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2">Email App</h1>
+        <p className="text-gray-600">Create and send beautiful emails with React Email</p>
+      </header>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Email Type</label>
+            <select
+              value={emailType}
+              onChange={(e) => setEmailType(e.target.value)}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="welcome">Welcome Email</option>
+              <option value="notification">Notification Email</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Recipient Email *</label>
+            <input
+              type="email"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              className="w-full p-2 border rounded-md"
+              required
+              placeholder="recipient@example.com"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full p-2 border rounded-md"
+              placeholder="John Doe"
+            />
+          </div>
+
+          {emailType === "notification" && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Message</label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                  rows={3}
+                  placeholder="Your notification message here..."
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Action URL</label>
+                <input
+                  type="url"
+                  value={actionUrl}
+                  onChange={(e) => setActionUrl(e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                  placeholder="https://example.com"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Action Text</label>
+                <input
+                  type="text"
+                  value={actionText}
+                  onChange={(e) => setActionText(e.target.value)}
+                  className="w-full p-2 border rounded-md"
+                  placeholder="View Details"
+                />
+              </div>
+            </>
+          )}
+
+          <div className="flex gap-4 mt-6">
+            <button
+              type="button"
+              onClick={handlePreview}
+              className="flex-1 bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition-colors"
+            >
+              Preview Email
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:bg-blue-400"
+            >
+              {loading ? "Sending..." : "Send Email"}
+            </button>
+          </div>
+        </form>
+
+        {result && (
+          <div className={`mt-4 p-3 rounded-md ${result.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+            {result.success ? "Email sent successfully!" : result.error}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8 bg-gray-50 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4">How to use</h2>
+        <ol className="list-decimal pl-5 space-y-2">
+          <li>Select an email template type (Welcome or Notification)</li>
+          <li>Enter the recipient's email address</li>
+          <li>Customize the email content with the form fields</li>
+          <li>Click "Preview Email" to see how your email will look</li>
+          <li>Click "Send Email" to deliver your message</li>
+        </ol>
+        <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md">
+          <strong>Note:</strong> You need to set up your <code>RESEND_API_KEY</code> in the <code>.env.local</code> file to send emails.
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
