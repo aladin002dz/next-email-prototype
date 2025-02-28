@@ -3,6 +3,9 @@
 import { useState } from "react";
 
 export default function Home() {
+  // Intentional error - referencing a non-existent variable
+  //console.log(nonExistentVariable.property);
+
   const [emailType, setEmailType] = useState("welcome");
   const [recipient, setRecipient] = useState("");
   const [username, setUsername] = useState("");
@@ -69,17 +72,17 @@ export default function Home() {
     <div className="min-h-screen p-8 max-w-3xl mx-auto">
       <header className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-2">Email App</h1>
-        <p className="text-gray-600">Create and send beautiful emails with React Email</p>
+        <p className="text-gray-800">Create and send beautiful emails with React Email</p>
       </header>
 
       <div className="bg-white p-6 rounded-lg shadow-md">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Email Type</label>
+            <label className="block text-sm font-medium text-gray-800 mb-1">Email Type</label>
             <select
               value={emailType}
               onChange={(e) => setEmailType(e.target.value)}
-              className="w-full p-2 border rounded-md"
+              className="w-full text-gray-800 p-2 border rounded-md"
             >
               <option value="welcome">Welcome Email</option>
               <option value="notification">Notification Email</option>
@@ -87,7 +90,7 @@ export default function Home() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Recipient Email *</label>
+            <label className="block text-sm font-medium text-gray-800 mb-1">Recipient Email *</label>
             <input
               type="email"
               value={recipient}
@@ -99,7 +102,7 @@ export default function Home() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Username</label>
+            <label className="block text-sm font-medium text-gray-800 mb-1">Username</label>
             <input
               type="text"
               value={username}
@@ -112,7 +115,7 @@ export default function Home() {
           {emailType === "notification" && (
             <>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Message</label>
+                <label className="block text-sm font-medium text-gray-800 mb-1">Message</label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -123,7 +126,7 @@ export default function Home() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Action URL</label>
+                <label className="block text-sm font-medium text-gray-800 mb-1">Action URL</label>
                 <input
                   type="url"
                   value={actionUrl}
@@ -134,7 +137,7 @@ export default function Home() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Action Text</label>
+                <label className="block text-sm font-medium text-gray-800 mb-1">Action Text</label>
                 <input
                   type="text"
                   value={actionText}
@@ -169,20 +172,6 @@ export default function Home() {
             {result.success ? "Email sent successfully!" : result.error}
           </div>
         )}
-      </div>
-
-      <div className="mt-8 bg-gray-50 p-6 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">How to use</h2>
-        <ol className="list-decimal pl-5 space-y-2">
-          <li>Select an email template type (Welcome or Notification)</li>
-          <li>Enter the recipient's email address</li>
-          <li>Customize the email content with the form fields</li>
-          <li>Click "Preview Email" to see how your email will look</li>
-          <li>Click "Send Email" to deliver your message</li>
-        </ol>
-        <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md">
-          <strong>Note:</strong> You need to set up your <code>RESEND_API_KEY</code> in the <code>.env.local</code> file to send emails.
-        </div>
       </div>
     </div>
   );

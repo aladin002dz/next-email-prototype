@@ -26,7 +26,7 @@ export const WelcomeEmail = ({
       <Body style={main}>
         <Container style={container}>
           <Img
-            src="https://via.placeholder.com/150x50?text=Logo"
+            src="/react_logo.svg"
             width="150"
             height="50"
             alt="Logo"
