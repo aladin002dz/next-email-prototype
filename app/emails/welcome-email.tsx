@@ -26,7 +26,7 @@ export const WelcomeEmail = ({
       <Body style={main}>
         <Container style={container}>
           <Img
-            src="/react_logo.svg"
+            src="https://github.com/aladin002dz/next-email-prototype/blob/main/public/react_logo.svg?raw=true"
             width="150"
             height="50"
             alt="Logo"

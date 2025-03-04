@@ -39,7 +39,7 @@ export default function Home() {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setResult({ success: true });
       } else {
@@ -57,13 +57,13 @@ export default function Home() {
     const params = new URLSearchParams();
     params.append("type", emailType);
     if (username) params.append("username", username);
-    
+
     if (emailType === "notification") {
       if (message) params.append("message", message);
       if (actionUrl) params.append("actionUrl", actionUrl);
       if (actionText) params.append("actionText", actionText);
     }
-    
+
     // Open preview in a new tab
     window.open(`/preview?${params.toString()}`, "_blank");
   };
@@ -75,10 +75,10 @@ export default function Home() {
         <p className="text-gray-800">Create and send beautiful emails with React Email</p>
       </header>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white text-gray-800 p-6 rounded-lg shadow-md">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-800 mb-1">Email Type</label>
+            <label className="block text-sm font-medium mb-1">Email Type</label>
             <select
               value={emailType}
               onChange={(e) => setEmailType(e.target.value)}
@@ -90,7 +90,7 @@ export default function Home() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-800 mb-1">Recipient Email *</label>
+            <label className="block text-sm font-mediummb-1">Recipient Email *</label>
             <input
               type="email"
               value={recipient}
@@ -102,7 +102,7 @@ export default function Home() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-800 mb-1">Username</label>
+            <label className="block text-sm font-medium mb-1">Username</label>
             <input
               type="text"
               value={username}
@@ -115,7 +115,7 @@ export default function Home() {
           {emailType === "notification" && (
             <>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-800 mb-1">Message</label>
+                <label className="block text-sm font-medium mb-1">Message</label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -126,7 +126,7 @@ export default function Home() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-800 mb-1">Action URL</label>
+                <label className="block text-sm font-medium mb-1">Action URL</label>
                 <input
                   type="url"
                   value={actionUrl}
@@ -137,7 +137,7 @@ export default function Home() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-800 mb-1">Action Text</label>
+                <label className="block text-sm font-medium mb-1">Action Text</label>
                 <input
                   type="text"
                   value={actionText}
