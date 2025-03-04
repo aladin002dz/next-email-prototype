@@ -116,18 +116,12 @@ export default function PreviewPage() {
           )}
         </div>
         
-        <div className="flex justify-between">
+        <div className="flex justify-end">
           <button 
             onClick={() => window.close()} 
-            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"
-          >
-            Close Preview
-          </button>
-          <button 
-            onClick={() => window.history.back()} 
             className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
           >
-            Back to Form
+            Close Preview
           </button>
         </div>
         
