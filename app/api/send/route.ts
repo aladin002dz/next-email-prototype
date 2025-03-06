@@ -11,7 +11,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(req: NextRequest) {
   try {
     const { type, to, subject, data } = await req.json();
-    
+
     if (!to) {
       return NextResponse.json(
         { error: 'Recipient email is required' },
@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
     // Render the appropriate email template based on type
     switch (type) {
       case 'welcome':
-        emailHtml = await renderAsync(WelcomeEmail({ 
-          username: data?.username || 'User' 
+        emailHtml = await renderAsync(WelcomeEmail({
+          username: data?.username || 'User'
         }));
         emailSubject = subject || 'Welcome to Our Platform!';
         break;
-      
+
       case 'notification':
-        emailHtml = await renderAsync(NotificationEmail({ 
+        emailHtml = await renderAsync(NotificationEmail({
           username: data?.username || 'User',
           message: data?.message || 'You have a new notification',
           actionUrl: data?.actionUrl || 'https://example.com',
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         }));
         emailSubject = subject || 'New Notification';
         break;
-      
+
       default:
         return NextResponse.json(
           { error: 'Invalid email type' },
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     // Send the email using Resend
     const result = await resend.emails.send({
-      from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
+      from: process.env.FROM_EMAIL ? `MaroStudio <${process.env.FROM_EMAIL}>` : 'MaroStudio <hello@marostudio.dev>',
       to,
       subject: emailSubject,
       html: emailHtml,

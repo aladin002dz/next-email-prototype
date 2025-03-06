@@ -1,0 +1,96 @@
+{
+  "rules": {
+    "formatting": {
+      "typescript": {
+        "indent": 2,
+        "singleQuote": true,
+        "trailingComma": "es5",
+        "printWidth": 80,
+        "semi": true,
+        "arrowParens": "avoid",
+        "bracketSpacing": true
+      }
+    },
+    "linting": {
+      "typescript": {
+        "noUnusedVariables": "warn",
+        "noImplicitAny": "error",
+        "strictNullChecks": true
+      }
+    },
+    "naming": {
+      "components": {
+        "pattern": "^[A-Z][a-zA-Z0-9]*$",
+        "message": "React components must use PascalCase"
+      },
+      "componentFiles": {
+        "pattern": "^[A-Z][a-zA-Z0-9]*\\.tsx$",
+        "message": "Component files must use PascalCase and end with .tsx"
+      }
+    },
+    "imports": {
+      "preferNamed": true,
+      "autoImport": true
+    },
+    "architecture": {
+      "nextjs": {
+        "enforceAppRouter": true,
+        "serverComponentConvention": {
+          "pattern": "^(page|layout|loading|error|not-found)\\.tsx$",
+          "defaultServer": true
+        },
+        "clientComponentConvention": {
+          "requireClientDirective": true
+        }
+      }
+    },
+    "dependencies": {
+      "required": {
+        "styling": [
+          "tailwindcss",
+          "@shadcn/ui"
+        ],
+        "dataFetching": [
+          "@tanstack/react-query"
+        ],
+        "forms": [
+          "react-hook-form",
+          "zod"
+        ],
+        "database": [
+          "prisma"
+        ]
+      }
+    },
+    "stateManagement": {
+      "preferContextOverRedux": true
+    },
+    "codeCompletion": true,
+    "inlineHints": true,
+    "documentation": {
+      "styleGuide": "airbnb",
+      "projectStructure": [
+        "Follow Next.js App Router patterns",
+        "Use server components by default",
+        "Client components must use 'use client' directive"
+      ],
+      "technicalStack": {
+        "ui": [
+          "Tailwind CSS",
+          "Shadcn UI"
+        ],
+        "forms": [
+          "React Hook Form",
+          "Zod"
+        ],
+        "data": [
+          "TanStack Query",
+          "Prisma"
+        ],
+        "state": [
+          "React Context"
+        ]
+      }
+    }
+  }
+}
