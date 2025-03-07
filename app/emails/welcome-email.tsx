@@ -19,6 +19,10 @@ interface WelcomeEmailProps {
 export const WelcomeEmail = ({
   username = 'User',
 }: WelcomeEmailProps) => {
+  // Use an absolute URL for the logo
+  // In production, this should be a hosted image URL
+  const logoUrl = 'https://raw.githubusercontent.com/aladin002dz/next-email-prototype/main/public/marodev-logo.png';
+  
   return (
     <Html>
       <Head />
@@ -26,7 +30,7 @@ export const WelcomeEmail = ({
       <Body style={main}>
         <Container style={container}>
           <Img
-            src="https://github.com/aladin002dz/next-email-prototype/blob/main/public/marodev-logo.png?raw=true"
+            src={logoUrl}
             width="150"
             height="50"
             alt="Logo"
@@ -48,7 +52,7 @@ export const WelcomeEmail = ({
             </Link>
           </Section>
           <Text style={footer}>
-            © 2025 Email App. All rights reserved.
+            &copy; 2025 Email App. All rights reserved.
           </Text>
         </Container>
       </Body>
