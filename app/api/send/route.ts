@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { renderAsync } from '@react-email/render';
-import WelcomeEmail from '../../emails/welcome-email';
-import NotificationEmail from '../../emails/notification-email';
+import { render } from '@react-email/render';
+import WelcomeEmail from '@/app/emails/welcome-email';
+import NotificationEmail from '@/app/emails/notification-email';
 
 // Initialize Resend with your API key
 // You should add your API key to .env.local file
@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
     // Render the appropriate email template based on type
     switch (type) {
       case 'welcome':
-        emailHtml = await renderAsync(WelcomeEmail({
+        emailHtml = render(WelcomeEmail({
           username: data?.username || 'User'
         }));
         emailSubject = subject || 'Welcome to Our Platform!';
         break;
 
       case 'notification':
-        emailHtml = await renderAsync(NotificationEmail({
+        emailHtml = render(NotificationEmail({
           username: data?.username || 'User',
           message: data?.message || 'You have a new notification',
           actionUrl: data?.actionUrl || 'https://example.com',

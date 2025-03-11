@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { renderAsync } from '@react-email/render';
-import WelcomeEmail from '../../emails/welcome-email';
-import NotificationEmail from '../../emails/notification-email';
+import WelcomeEmail from '@/app/emails/welcome-email';
+import NotificationEmail from '@/app/emails/notification-email';
 
 export async function GET(req: NextRequest) {
   try {
@@ -11,26 +11,26 @@ export async function GET(req: NextRequest) {
     const message = searchParams.get('message') || 'You have a new notification';
     const actionUrl = searchParams.get('actionUrl') || 'https://example.com';
     const actionText = searchParams.get('actionText') || 'View Details';
-    
+
     let emailHtml;
-    
+
     // Render the appropriate email template based on type
     switch (type) {
       case 'welcome':
-        emailHtml = await renderAsync(WelcomeEmail({ 
-          username 
+        emailHtml = await renderAsync(WelcomeEmail({
+          username
         }));
         break;
-      
+
       case 'notification':
-        emailHtml = await renderAsync(NotificationEmail({ 
+        emailHtml = await renderAsync(NotificationEmail({
           username,
           message,
           actionUrl,
           actionText
         }));
         break;
-      
+
       default:
         return NextResponse.json(
           { error: 'Invalid email type' },

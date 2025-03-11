@@ -11,33 +11,44 @@ export default function PreviewPage() {
   const [htmlContent, setHtmlContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"preview" | "html">("preview");
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
+    // Get parameters without modifying the URL
     const type = searchParams.get("type") || "welcome";
     const username = searchParams.get("username") || "User";
     const message = searchParams.get("message") || "You have a new notification";
     const actionUrl = searchParams.get("actionUrl") || "https://example.com";
     const actionText = searchParams.get("actionText") || "View Details";
-    
+
     // Set React component preview
     if (type === "welcome") {
       setEmailContent(<WelcomeEmail username={username} />);
     } else if (type === "notification") {
       setEmailContent(
-        <NotificationEmail 
-          username={username} 
-          message={message} 
-          actionUrl={actionUrl} 
-          actionText={actionText} 
+        <NotificationEmail
+          username={username}
+          message={message}
+          actionUrl={actionUrl}
+          actionText={actionText}
         />
       );
     }
-    
+
+    // Create params for API call without modifying the browser URL
+    const apiParams = new URLSearchParams();
+    apiParams.set("type", type);
+    apiParams.set("username", username);
+    if (type === "notification") {
+      apiParams.set("message", message);
+      apiParams.set("actionUrl", actionUrl);
+      apiParams.set("actionText", actionText);
+    }
+
     // Fetch HTML content
     const fetchHtmlContent = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/preview?${searchParams.toString()}`);
+        const response = await fetch(`/api/preview?${apiParams.toString()}`);
         if (response.ok) {
           const html = await response.text();
           setHtmlContent(html);
@@ -51,41 +62,39 @@ export default function PreviewPage() {
         setLoading(false);
       }
     };
-    
+
     fetchHtmlContent();
   }, [searchParams]);
-  
+
   return (
     <div className="min-h-screen p-4 bg-gray-50">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white p-6 rounded-lg shadow-md mb-4">
           <h1 className="text-2xl font-bold mb-6">Email Preview</h1>
-          
+
           <div className="border-b border-gray-200 mb-6">
             <nav className="flex space-x-8">
               <button
                 onClick={() => setActiveTab("preview")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "preview"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "preview"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
               >
                 Component Preview
               </button>
               <button
                 onClick={() => setActiveTab("html")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "html"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === "html"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
               >
                 HTML View
               </button>
             </nav>
           </div>
-          
+
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -115,16 +124,16 @@ export default function PreviewPage() {
             </div>
           )}
         </div>
-        
+
         <div className="flex justify-end">
-          <button 
-            onClick={() => window.close()} 
+          <button
+            onClick={() => window.close()}
             className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
           >
             Close Preview
           </button>
         </div>
-        
+
         <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800">
           <p className="font-medium mb-2">Preview Notes:</p>
           <ul className="list-disc pl-5 space-y-1">

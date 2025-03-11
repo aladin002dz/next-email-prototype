@@ -65,7 +65,7 @@ export default function Home() {
     }
 
     // Open preview in a new tab
-    window.open(`/preview?${params.toString()}`, "_blank");
+    window.open(`/previewEmail?${params.toString()}`, "_blank");
   };
 
   return (
