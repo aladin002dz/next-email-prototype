@@ -6,12 +6,8 @@ export default function Home() {
   // Intentional error - referencing a non-existent variable
   //console.log(nonExistentVariable.property);
 
-  const [emailType, setEmailType] = useState("welcome");
   const [recipient, setRecipient] = useState("");
   const [username, setUsername] = useState("");
-  const [message, setMessage] = useState("");
-  const [actionUrl, setActionUrl] = useState("https://example.com");
-  const [actionText, setActionText] = useState("View Details");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ success?: boolean; error?: string } | null>(null);
 
@@ -27,13 +23,9 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: emailType,
           to: recipient,
           data: {
             username,
-            message,
-            actionUrl,
-            actionText,
           },
         }),
       });
@@ -45,7 +37,7 @@ export default function Home() {
       } else {
         setResult({ error: data.error || "Failed to send email" });
       }
-    } catch (error) {
+    } catch {
       setResult({ error: "An error occurred while sending the email" });
     } finally {
       setLoading(false);
@@ -55,14 +47,7 @@ export default function Home() {
   const handlePreview = () => {
     // Build query params for the preview
     const params = new URLSearchParams();
-    params.append("type", emailType);
     if (username) params.append("username", username);
-
-    if (emailType === "notification") {
-      if (message) params.append("message", message);
-      if (actionUrl) params.append("actionUrl", actionUrl);
-      if (actionText) params.append("actionText", actionText);
-    }
 
     // Open preview in a new tab
     window.open(`/previewEmail?${params.toString()}`, "_blank");
@@ -77,18 +62,6 @@ export default function Home() {
 
       <div className="bg-white text-gray-800 p-6 rounded-lg shadow-md">
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Email Type</label>
-            <select
-              value={emailType}
-              onChange={(e) => setEmailType(e.target.value)}
-              className="w-full text-gray-800 p-2 border rounded-md"
-            >
-              <option value="welcome">Welcome Email</option>
-              <option value="notification">Notification Email</option>
-            </select>
-          </div>
-
           <div className="mb-4">
             <label className="block text-sm font-mediummb-1">Recipient Email *</label>
             <input
@@ -111,43 +84,6 @@ export default function Home() {
               placeholder="John Doe"
             />
           </div>
-
-          {emailType === "notification" && (
-            <>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Message</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                  rows={3}
-                  placeholder="Your notification message here..."
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Action URL</label>
-                <input
-                  type="url"
-                  value={actionUrl}
-                  onChange={(e) => setActionUrl(e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                  placeholder="https://example.com"
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Action Text</label>
-                <input
-                  type="text"
-                  value={actionText}
-                  onChange={(e) => setActionText(e.target.value)}
-                  className="w-full p-2 border rounded-md"
-                  placeholder="View Details"
-                />
-              </div>
-            </>
-          )}
 
           <div className="flex gap-4 mt-6">
             <button

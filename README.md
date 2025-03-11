@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org) project that demonstrates how to create 
 ## Features
 
 - Create beautiful, responsive emails using React components
-- Two email templates: Welcome and Notification
+- Welcome email template
 - Preview emails before sending them
 - View the HTML source of emails
 - Send emails using Resend API
@@ -48,32 +48,26 @@ npm run dev
 
 ## Usage
 
-1. Select an email template type (Welcome or Notification)
-2. Enter the recipient's email address
-3. Customize the email content with the form fields
-4. Click "Preview Email" to see how your email will look
+1. Enter the recipient's email address
+2. Customize the email content with the form fields
+3. Click "Preview Email" to see how your email will look
    - The preview page offers two views:
      - Component Preview: Shows the email as rendered by React
      - HTML View: Shows the raw HTML that will be sent
    - You can copy the HTML to test in email clients
-5. Click "Send Email" to deliver your message
+4. Click "Send Email" to deliver your message
 
-## Email Templates
+## Email Template
 
 ### Welcome Email
 
 A simple welcome email with a greeting, message, and call-to-action button.
 
-### Notification Email
+## Customizing Template
 
-A notification email with a customizable message and action button.
-
-## Customizing Templates
-
-You can customize the email templates by modifying the files in the `app/emails` directory:
+You can customize the email template by modifying the file in the `app/emails` directory:
 
 - `welcome-email.tsx`: Welcome email template
-- `notification-email.tsx`: Notification email template
 
 ## API Endpoint
 
@@ -81,14 +75,11 @@ The app includes an API endpoint at `/api/send` that accepts POST requests with 
 
 ```json
 {
-  "type": "welcome | notification",
+  "type": "welcome",
   "to": "recipient@example.com",
   "subject": "Optional custom subject",
   "data": {
-    "username": "Optional username",
-    "message": "Optional message (for notification emails)",
-    "actionUrl": "Optional action URL (for notification emails)",
-    "actionText": "Optional action text (for notification emails)"
+    "username": "Optional username"
   }
 }
 ```

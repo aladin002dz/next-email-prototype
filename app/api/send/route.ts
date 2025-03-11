@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import WelcomeEmail from '@/app/emails/welcome-email';
-import NotificationEmail from '@/app/emails/notification-email';
 
 // Initialize Resend with your API key
 // You should add your API key to .env.local file
@@ -10,7 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
-    const { type, to, subject, data } = await req.json();
+    const { to, subject, data } = await req.json();
 
     if (!to) {
       return NextResponse.json(
@@ -19,34 +18,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let emailHtml;
-    let emailSubject = subject || 'Email from Your App';
-
-    // Render the appropriate email template based on type
-    switch (type) {
-      case 'welcome':
-        emailHtml = render(WelcomeEmail({
-          username: data?.username || 'User'
-        }));
-        emailSubject = subject || 'Welcome to Our Platform!';
-        break;
-
-      case 'notification':
-        emailHtml = render(NotificationEmail({
-          username: data?.username || 'User',
-          message: data?.message || 'You have a new notification',
-          actionUrl: data?.actionUrl || 'https://example.com',
-          actionText: data?.actionText || 'View Details'
-        }));
-        emailSubject = subject || 'New Notification';
-        break;
-
-      default:
-        return NextResponse.json(
-          { error: 'Invalid email type' },
-          { status: 400 }
-        );
-    }
+    // Render the welcome email template
+    const emailHtml = await render(WelcomeEmail({
+      username: data?.username || 'User'
+    }));
+    const emailSubject = subject || 'Welcome to Our Platform!';
 
     // Send the email using Resend
     const result = await resend.emails.send({

@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import WelcomeEmail from "../emails/welcome-email";
-import NotificationEmail from "../emails/notification-email";
 
 export default function PreviewPage() {
   const searchParams = useSearchParams();
@@ -14,35 +13,14 @@ export default function PreviewPage() {
 
   useEffect(() => {
     // Get parameters without modifying the URL
-    const type = searchParams.get("type") || "welcome";
     const username = searchParams.get("username") || "User";
-    const message = searchParams.get("message") || "You have a new notification";
-    const actionUrl = searchParams.get("actionUrl") || "https://example.com";
-    const actionText = searchParams.get("actionText") || "View Details";
 
     // Set React component preview
-    if (type === "welcome") {
-      setEmailContent(<WelcomeEmail username={username} />);
-    } else if (type === "notification") {
-      setEmailContent(
-        <NotificationEmail
-          username={username}
-          message={message}
-          actionUrl={actionUrl}
-          actionText={actionText}
-        />
-      );
-    }
+    setEmailContent(<WelcomeEmail username={username} />);
 
     // Create params for API call without modifying the browser URL
     const apiParams = new URLSearchParams();
-    apiParams.set("type", type);
     apiParams.set("username", username);
-    if (type === "notification") {
-      apiParams.set("message", message);
-      apiParams.set("actionUrl", actionUrl);
-      apiParams.set("actionText", actionText);
-    }
 
     // Fetch HTML content
     const fetchHtmlContent = async () => {
