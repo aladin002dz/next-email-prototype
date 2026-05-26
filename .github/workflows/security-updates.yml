@@ -1,0 +1,60 @@
+name: Security Updates
+
+on:
+  # Trigger on schedule (daily)
+  schedule:
+    - cron: '0 2 * * *'  # 2 AM UTC daily
+  # Also allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for security vulnerabilities
+        run: npm audit
+        continue-on-error: true
+
+      - name: Update packages
+        run: npm update
+
+      - name: Audit fix (attempts to fix vulnerabilities)
+        run: npm audit fix
+        continue-on-error: true
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: update dependencies and fix security vulnerabilities'
+          title: 'chore: Security package updates'
+          body: |
+            ## Automated Security Updates
+            
+            This PR updates packages to address security vulnerabilities and latest patches.
+            
+            - npm audit results checked
+            - Dependencies updated
+            - npm audit fix applied
+            
+            Please review before merging.
+          branch: automated-security-updates
+          delete-branch: true
+          labels: |
+            dependencies
+            security
+            automated
