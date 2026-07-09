@@ -1,4 +1,4 @@
-name: Security Updates
+name: Update Dependencies
 
 on:
   # Run every Monday at 08:00 UTC
